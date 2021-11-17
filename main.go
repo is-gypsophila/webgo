@@ -7,21 +7,24 @@ import (
 )
 
 func main() {
-	engine := core.New()
-
-	engine.GET("/", func(c *core.Context) {
-		c.HTML(http.StatusOK, "<h1>hello core!!!</h1>")
+	r := core.New()
+	r.GET("/", func(c *core.Context) {
+		c.HTML(http.StatusOK, "<h1>Hello Gee</h1>")
 	})
 
-	engine.GET("/hello", func(c *core.Context) {
-		c.String(http.StatusOK, "hello %s,you are at %s\n", c.Query("name"), c.Path)
+	r.GET("/hello", func(c *core.Context) {
+		// expect /hello?name=geektutu
+		c.String(http.StatusOK, "hello %s, you're at %s\n", c.Query("name"), c.Path)
 	})
 
-	engine.POST("/login", func(c *core.Context) {
-		c.JSON(http.StatusOK, core.H{
-			"username": c.PostForm("username"),
-			"password": c.PostForm("password"),
-		})
+	r.GET("/hello/:name", func(c *core.Context) {
+		// expect /hello/geektutu
+		c.String(http.StatusOK, "hello %s, you're at %s\n", c.Param("name"), c.Path)
 	})
-	engine.Run(":9999")
+
+	r.GET("/assets/*filepath", func(c *core.Context) {
+		c.JSON(http.StatusOK, core.H{"filepath": c.Param("filepath")})
+	})
+
+	r.Run(":9999")
 }

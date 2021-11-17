@@ -19,6 +19,8 @@ type Context struct {
 	Path string
 	// 访问方法
 	Method string
+
+	Params map[string]string
 	// 状态码
 	StatusCode int
 }
@@ -73,4 +75,9 @@ func (c Context) HTML(code int, html string) {
 	c.SetHeader("Content-Type", "text/html")
 	c.Status(code)
 	c.Writer.Write([]byte(html))
+}
+
+func (c *Context) Param(key string) string {
+	value, _ := c.Params[key]
+	return value
 }
